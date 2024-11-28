@@ -198,3 +198,71 @@ SQL 50 questions
      ) temp
     ;
 
+    'SORTING AND GROUPING'
+
+2356. Number of Unique Subjects Taught by Each Teacher
+
+    select teacher_id, count(distinct(subject_id)) as cnt
+    from teacher
+    group by teacher_id;
+
+1141. User Activity for the Past 30 Days I
+
+    select activity_date as day, count(distinct user_id) as active_users
+    from activity
+    -- where activity_date between '2019-06-28' and  '2019-07-28' 
+    -- where datediff('2019-07-27', activity_date) < 30 and activity_date <= '2019-07-27'
+    group by activity_date;
+    -- any one WHERE condition
+
+1070. Product Sales Analysis III
+
+    select
+    product_id, 
+    year as first_year,
+    quantity,
+    price
+    from
+    (select *,
+    rank() over (partition by product_id order by year) as rk
+    from sales
+    ) temp
+    where rk = 1;
+
+596. Classes More Than 5 Students
+
+    select class
+    from courses
+    group by class
+    having count(*) > 4;
+
+1729. Find Followers Count
+
+    select user_id, count(follower_id) as followers_count
+    from followers
+    group by user_id
+    order by user_id;
+
+619. Biggest Single Number
+
+    select max(num) as num
+    from
+    (
+    select num
+    from mynumbers
+    group by num
+    having count(*) < 2
+    ) t;
+
+1045. Customers Who Bought All Products
+
+    select customer_id
+    from customer
+    group by customer_id
+    having count(distinct product_key) = (select count(*) from product);
+
+
+
+
+
+
