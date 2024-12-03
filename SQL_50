@@ -262,6 +262,84 @@ SQL 50 questions
     having count(distinct product_key) = (select count(*) from product);
 
 
+    'ADVANCED SELECT AND JOINS'
+
+1731. The Number of Employees Which Report to Each Employee
+
+    select e.employee_id, e.name, count(m.reports_to) as reports_count, round(avg(m.age)) as average_age
+    from employees e
+    join employees m on e.employee_id = m.reports_to
+    group by e.employee_id
+    order by e.employee_id;
+
+1789. Primary Department for Each Employee
+
+    select employee_id, department_id
+    from employee
+    where primary_flag = 'Y' or employee_id in 
+    (
+        select employee_id
+        from employee
+        group by employee_id
+        having count(department_id) = 1
+    );
+
+610. Triangle Judgement
+
+    select x,y,z,
+    case when (x + y > z) and (x + z > y) and (y + z > x) then 'Yes' else 'No' end as triangle
+    from triangle;
+
+180. Consecutive Numbers
+
+    select distinct num as ConsecutiveNums
+    from
+    (
+    select id, lag(num) over(order by id) as prev,num, lead(num) over(order by id) as next
+    from logs
+    ) temp
+    where num = prev and num = next;
+
+1164. Product Price at a Given Date
+
+    with cte as
+    (
+    select *, rank() over (partition by product_id order by change_date desc) as rk
+    from products
+    where change_date <= '2019-08-16'
+    )
+    select product_id, new_price as price
+    from cte
+    where rk = 1
+    
+    union 
+    
+    select product_id, 10 as price
+    from products
+    where product_id not in (select product_id from cte);
+
+1204. Last Person to Fit in the Bus
+
+    select person_name
+    from
+    (
+    select *, sum(weight) over (order by turn) as sum_weight
+    from queue
+    ) t
+    where sum_weight <= 1000
+    order by sum_weight desc
+    limit 1;
+
+1907. Count Salary Categories
+
+    select
+    'Low Salary' as category, sum(if(income < 20000, 1, 0)) as accounts_count from accounts
+    union
+    select 
+    'Average Salary' as category, sum(if(income >= 20000 and income <= 50000, 1, 0)) as accounts_count from accounts
+    union
+    select
+    'High Salary' as category, sum(if(income > 50000, 1, 0)) as accounts_count from accounts;
 
 
 
